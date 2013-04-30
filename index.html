@@ -1,0 +1,79 @@
+<html>
+<head>
+<title>Getting Colors based on Location</title>
+<link href="bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap-responsive.min.css" rel="stylesheet">
+<link href="font-awesome.min.css" rel="stylesheet">
+<link href="bootswatch.css" rel="stylesheet">
+<?php 
+  require_once("phpFlickr.php");
+  $key = "80f974ba0c1454bdd141c1f69b6ead6a";
+  $secret = "759dea0d7fc411e9";
+  $f = new phpFlickr($key, $secret);
+?>
+</head>
+<body>
+
+	 <div class="navbar navbar-fixed-top">
+   <div class="navbar-inner">
+     <div class="container">
+       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+       </a>
+       <a class="brand" href="../">GeographiColor</a>
+       <div class="nav-collapse collapse" id="main-menu">
+       
+        <ul class="nav pull-right" id="main-menu-right">
+          <li><a rel="tooltip" target="" href="index.html" onclick="_gaq.push(['_trackEvent', 'click', 'outbound', 'builtwithbootstrap']);">Locations <i class="icon-share-alt"></i></a></li>
+          <li><a rel="tooltip" target="" href="picker.html" onclick="_gaq.push(['_trackEvent', 'click', 'outbound', 'wrapbootstrap']);">Pick a Location <i class="icon-share-alt"></i></a></li>
+        </ul>
+       </div>
+     </div>
+   </div>
+ </div>
+
+    <div class="container">
+
+<div class="hero-unit" style="margin-top:100px">
+  <h1>Help us select the World's Colors</h1>
+  <p>Use our color tagging tool to select the world's colors</p>
+  <p>
+    <a class="btn btn-primary btn-large">
+      Click here to pick a Location
+    </a>
+  </p>
+</div>
+
+<?php
+  $location = $f->places_find("Manhattan");
+  $locLat = $location['places']['place'][0]['latitude'];
+  $locLong = $location['places']['place'][0]['longitude'];
+
+  $places_location = $f->places_findByLatLon($locLat, $locLong);
+
+  $photos_Location = $f->photos_search(array( "lat"=>$locLat, "lon"=>$locLong, "radius"=>2, "per_page"=>20));
+?>
+  <div class="row-fluid">
+            <ul class="thumbnails">
+              <?php 
+              foreach((array)$photos_Location['photo'] as $photo){
+
+                echo "<li class=\"span3\" style=\"background-color:rgb(221, 221, 221)\">";
+                echo "<a href=\"#\" class=\"thumbnail\">";
+                echo "<img data-src=\"".$f->buildPhotoURL($photo,"Square")."\" alt=\"260x180\" style=\"width: 260px; height: 180px;\" src=\"".$f->buildPhotoURL($photo, "Square")."\">";
+                echo "</a>";
+              /**  echo "<div class=\"caption\" style=\"ali\">";
+                echo "<h3 style=\"margin-left:10px;\">New York, NY<a href=\"#\" style=\"float:right;margin-right:10px;margin-top:5px\" class=\"btn btn-primary\">View</a></h3>	 </p>
+                    </div>
+                  </li>";
+                **/
+                }
+                ?>
+
+            </ul>
+          </div>
+
+</body>
+</html>

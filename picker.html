@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>Getting Colors based on Location</title>
+<link href="bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap-responsive.min.css" rel="stylesheet">
+<link href="font-awesome.min.css" rel="stylesheet">
+<link href="bootswatch.css" rel="stylesheet">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+  #map-canvas { height: 50% }
+</style>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLkhdwb6f8-s41aUNX17sZj6ktiE2saH0&sensor=true">
+    </script>
+
+<script src="js/libs/mustache.js"></script>
+<script src="js/libs/quantize.js"></script>
+<script src="js/color-thief.js"></script>
+<script type="text/javascript">
+      function initialize() {
+        
+        var mapOptions = {
+          center: new google.maps.LatLng(40.7142, -74.0064),
+          zoom: 13,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        
+        var map = new google.maps.Map(document.getElementById("map-canvas"),mapOptions);
+
+
+
+         var moveListener = google.maps.event.addListener(map, "moveend", function() {
+          var bounds = map.getBounds();
+          var sw = bounds.getSouthWest();
+          var ne = bounds.getNorthEast();
+
+          var sBound = sw.lat();
+          var wBound = sw.lng();
+          var nBound = ne.lat();
+          var eBound = ne.lng();
+
+          consol.log(sBound);
+          });   
+      
+
+      google.maps.event.addListener(map, 'bounds_changed', function() {
+        try {
+                bounds = map.getBounds();
+
+        } catch( err ) {
+            alert( err );
+        }
+        });
+
+      google.maps.event.addListener(map ,'mouseup', function(){
+       try{
+        bounds = map.getBounds();
+        var sw = bounds.getSouthWest();
+        var ne = bounds.getNorthEast();
+
+        var sBound = sw.lat();
+        var wBound = sw.lng();
+        var nBound = ne.lat();
+        var eBound = ne.lng();
+
+        boundArg = "getNewPics.php?swLat="+sBound+"&swLong="+wBound+"&neLat="+nBound+"&neLong="+eBound;
+        $(function () {
+          $("#updatedPhotos").load(boundArg);
+        });
+
+
+      }
+      catch( err ){
+        alert(err);
+      }
+      }
+
+
+        );
+
+      
+      boundArg = "getNewPics.php?swLat=40.792&swLong=-74.003&neLat=40.83808804910631&neLong=-73.865";
+      $("#updatedPhotos").load(boundArg);          
+
+
+}
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      
+    </script>
+</head>
+<body style="background-color:rgb(6,73,117);">
+
+	 <div class="navbar navbar-fixed-top">
+   <div class="navbar-inner">
+     <div class="container">
+       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+       </a>
+       <a class="brand" href="../">GeoHue</a>
+       <div class="nav-collapse collapse" id="main-menu">
+       
+        <ul class="nav pull-right" id="main-menu-right">
+          <li><a rel="tooltip" target="" href="index.php" onclick="_gaq.push(['_trackEvent', 'click', 'outbound', 'builtwithbootstrap']);">Locations <i class="icon-share-alt"></i></a></li>
+          <li><a rel="tooltip" target="" href="picker.html" onclick="_gaq.push(['_trackEvent', 'click', 'outbound', 'wrapbootstrap']);">Pick a Location <i class="icon-share-alt"></i></a></li>
+        </ul>
+       </div>
+     </div>
+   </div>
+ </div>
+
+<div style="margin-top:20px;">
+  <div id="map-canvas" style="position:fixed; top:0;"/>
+</div>
+
+
+
+<ul class="media-grid" style="list-style-type: none; padding: 10px;">
+
+<div id="updatedPhotos">This is working...</div>
+
+
+</ul>
+</div>
+
+  
+</body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+</html>
